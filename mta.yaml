@@ -1,0 +1,55 @@
+_schema-version: 3.3.0
+ID: TT_CAP_APP
+version: 1.0.0
+description: "A simple CAP project."
+parameters:
+  enable-parallel-deployments: true
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds -dk cds build --production
+modules:
+  - name: TT_CAP_APP-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api # required by consumers of CAP services (e.g. approuter)
+        properties:
+          srv-url: ${default-url}
+    requires:
+      - name: TT_CAP_APP_HDI
+      - name: TT_CAP_APP-auth
+
+  - name: TT_CAP_APP-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: TT_CAP_APP_HDI
+
+resources:
+  - name: TT_CAP_APP_HDI
+    type: com.sap.xs.hdi-container
+    parameters:
+      schema-name: TT_CAP_APP
+      service: hana
+      service-plan: hdi-shared
+      
+  - name: TT_CAP_APP-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: TT_CAP_APP-${org}-${space}
+        tenant-mode: dedicated
