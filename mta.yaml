@@ -40,7 +40,8 @@ resources:
   - name: TT_CAP_APP_HDI
     type: com.sap.xs.hdi-container
     parameters:
-      schema-name: TT_CAP_APP
+      config:
+        schema-name: TT_CAP_APP
       service: hana
       service-plan: hdi-shared
       
@@ -51,5 +52,5 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: TT_CAP_APP-${org}-${space}
+        xsappname: TT_CAP_APP
         tenant-mode: dedicated
