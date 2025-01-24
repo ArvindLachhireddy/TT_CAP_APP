@@ -41,7 +41,7 @@ resources:
     type: com.sap.xs.hdi-container
     parameters:
       config:
-        schema-name: TT_CAP_APP
+        schema: TT_CAP_APP
       service: hana
       service-plan: hdi-shared
       

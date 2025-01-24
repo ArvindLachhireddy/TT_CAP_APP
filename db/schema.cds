@@ -19,7 +19,7 @@ entity Marks {
 entity view as
     select
         key a.STUDENT_ID,
-            concat(a.FIRST_NAME,' ', 
+            concat(a.FIRST_NAME,
             a.LAST_NAME) as FULL_NAME: TYP_NAME,
             b.SUB_NAME,
             b.MARKS
